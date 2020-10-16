@@ -4,7 +4,11 @@ import java.io.RandomAccessFile
  * A very basic but working string-to-string dictionary stored on disk. Uses a header hashtable of
  * 256 32-bit offsets, with the hash itself being the low byte of hashCode. Entries sharing a hash
  * are single-linked lists. When keys are deleted or altered, they are unlinked from the requisite
- * linked list and/or hashtable: all old keys and values remain in the file forever.
+ * linked list and/or hashtable only: all old keys and values remain in the file forever.
+ *
+ * This does indeed mean that the database will always expand with use until it hits 2 binary gig,
+ * at which point things will break. Were this intended for production, it would have been meet to
+ * do something about that.
  */
 class DumbDatabase(fileName:String):MutableMap<String, String> {
     private var fileObj:RandomAccessFile = RandomAccessFile(fileName, "rwd")
