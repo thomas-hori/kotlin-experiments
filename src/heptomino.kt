@@ -1,26 +1,26 @@
 import kotlin.math.max
 import kotlin.math.min
 
+/**
+ * Generate an empty two-state cellular automaton grid of the specified dimensions.
+ */
 fun generateGrid (w:Int, h:Int):List<MutableList<Boolean>> {
-    /**
-     * Generate an empty two-state cellular automaton grid of the specified dimensions.
-     */
     return List(w){ MutableList(h){false} }
 }
 
+/**
+ * Return an empty two-state cellular automaton grid of the same dimensions as the grid
+ * passed in.
+ */
 fun gridLike (grid:List<MutableList<Boolean>>):List<MutableList<Boolean>> {
-    /**
-     * Return an empty two-state cellular automaton grid of the same dimensions as the grid
-     * passed in.
-     */
     return generateGrid(grid.size, grid[0].size)
 }
 
+/**
+ * Return the number of active cells in the given cell's Moore neighbourhood of the
+ * given depth. Out-of-range areas are treated as inactive.
+ */
 fun mooreNeighbourhood (x:Int, y:Int, grid:List<MutableList<Boolean>>, depth:Int=1):Int {
-    /**
-     * Return the number of active cells in the given cell's Moore neighbourhood of the
-     * given depth. Out-of-range areas are treated as inactive.
-     */
     var count = 0
     for (curX in max(x - depth, 0)..min(x + depth, grid.lastIndex)) {
         for (curY in max(y - depth, 0)..min(y + depth, grid[curX].lastIndex)) {
@@ -35,12 +35,12 @@ fun mooreNeighbourhood (x:Int, y:Int, grid:List<MutableList<Boolean>>, depth:Int
     return count
 }
 
+/**
+ * Increment a generation in the two-state cellular automaton rule
+ * (Moore(Depth=1) Survival(2,3) Birth(3)), more popularly known as
+ * Conway's Game of Life.
+ */
 fun nextGenerationConway (lastGeneration:List<MutableList<Boolean>>):List<MutableList<Boolean>> {
-    /**
-     * Increment a generation in the two-state cellular automaton rule
-     * (Moore(Depth=1) Survival(2,3) Birth(3)), more popularly known as
-     * Conway's Game of Life.
-     */
     val newGeneration = gridLike(lastGeneration)
     for (x in 0..newGeneration.lastIndex) {
         for (y in 0..newGeneration[x].lastIndex) {
@@ -55,11 +55,11 @@ fun nextGenerationConway (lastGeneration:List<MutableList<Boolean>>):List<Mutabl
     return newGeneration
 }
 
+/**
+ * Increment a generation in the two-state cellular automaton rule
+ * (Moore(Depth=1) Survival(2,3) Birth(3,6)), more popularly known as HighLife.
+ */
 fun nextGenerationHighLife (lastGeneration:List<MutableList<Boolean>>):List<MutableList<Boolean>> {
-    /**
-     * Increment a generation in the two-state cellular automaton rule
-     * (Moore(Depth=1) Survival(2,3) Birth(3,6)), more popularly known as HighLife.
-     */
     val newGeneration = gridLike(lastGeneration)
     for (x in 0..newGeneration.lastIndex) {
         for (y in 0..newGeneration[x].lastIndex) {
@@ -75,15 +75,15 @@ fun nextGenerationHighLife (lastGeneration:List<MutableList<Boolean>>):List<Muta
     return newGeneration
 }
 
+/**
+ * Output a two-state cellular automaton grid to the console.
+ *
+ * Per convention amongst GoL applications, in a textual representation
+ * of a grid, either "b" or "." (here, ".") denotes an inactive cell,
+ * while "o" or "*" (here, "o") denotes an active cell.
+ */
 fun showGrid (grid:List<MutableList<Boolean>>) {
-    /**
-     * Output a two-state cellular automaton grid to the console.
-     *
-     * Per convention amongst GoL applications, in a textual representation
-     * of a grid, either "b" or "." (here, ".") denotes an inactive cell,
-     * while "o" or "*" (here, "o") denotes an active cell.
-     */
-    for (y in 0..grid[0].lastIndex) {
+   for (y in 0..grid[0].lastIndex) {
         for (x in 0..grid.lastIndex) {
             if (grid[x][y]) {
                 print("o")
@@ -95,11 +95,11 @@ fun showGrid (grid:List<MutableList<Boolean>>) {
     }
 }
 
+/**
+ * Test the B-heptomino, a pattern whose population stabilises over a moderately large
+ * number of generations under Conway's Life.
+ */
 fun heptomino () {
-    /**
-     * Test the B-heptomino, a pattern whose population stabilises over a moderately large
-     * number of generations under Conway's Life.
-     */
     var grid = generateGrid(128, 128)
     // Set up a B-heptomino
     grid[62][62] = true
@@ -118,11 +118,11 @@ fun heptomino () {
     println()
 }
 
+/**
+ * Test the Butterfly, a pattern which stabilises under Conway's Life but which
+ * self-replicates indefinitely under HighLife, with the given rule function.
+ */
 fun butterfly (generationFunction:(List<MutableList<Boolean>>) -> List<MutableList<Boolean>>) {
-    /**
-     * Test the Butterfly, a pattern which stabilises under Conway's Life but which
-     * self-replicates indefinitely under HighLife, with the given rule function.
-     */
     var grid = generateGrid(128, 128)
     // Set up a butterfly
     grid[62][62] = true

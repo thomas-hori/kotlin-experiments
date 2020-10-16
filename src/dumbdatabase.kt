@@ -1,12 +1,12 @@
 import java.io.RandomAccessFile
 
+/**
+ * A very basic but working string-to-string dictionary stored on disk. Uses a header hashtable of
+ * 256 32-bit offsets, with the hash itself being the low byte of hashCode. Entries sharing a hash
+ * are single-linked lists. When keys are deleted or altered, they are unlinked from the requisite
+ * linked list and/or hashtable: all old keys and values remain in the file forever.
+ */
 class DumbDatabase(fileName:String):MutableMap<String, String> {
-    /**
-     * A very basic but working string-to-string dictionary stored on disk. Uses a header hashtable of
-     * 256 32-bit offsets, with the hash itself being the low byte of hashCode. Entries sharing a hash
-     * are single-linked lists. When keys are deleted or altered, they are unlinked from the requisite
-     * linked list and/or hashtable: all old keys and values remain in the file forever.
-     */
     private var fileObj:RandomAccessFile = RandomAccessFile(fileName, "rwd")
     init {
         if (fileObj.length() < 1024L) {
@@ -220,7 +220,7 @@ fun main() {
     // Strings which JVM hash to zero: "creashaks organzine", "pollinating sandboxes", "ddnqavbj", "166lr735ka3q6"
     //     -- Source: https://minecraft.gamepedia.com/Seed_(level_generation)#Seed_0 (yes, really). Note that it
     //        also lists others which don't seem to actually produce a zero hash.
-    db["creashaks organzine"] = "Crøsus"
+    db["creashaks organzine"] = "Crœsus"
     db["pollinating sandboxes"] = "Cody Slab"
     db["166lr735ka3q6"] = "Big Taiga"
     println(db.entries)

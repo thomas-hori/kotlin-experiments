@@ -22,10 +22,10 @@ val gifts = arrayOf(null,
         "bells a-ringing"
 )
 
+/**
+ * Get the appropriate ordinal suffix for a given number
+ */
 fun ordinal (number:Int):String {
-    /**
-     * Get the appropriate ordinal suffix for a given number
-     */
     return if (number.absoluteValue in 10..19) {
         "th"
     } else {
@@ -38,10 +38,10 @@ fun ordinal (number:Int):String {
     }
 }
 
+/**
+ * Print the Twelve Days of Christmas and return the total number of gifts given.
+ */
 fun daysOfChristmas(days:Int = 12):Int {
-    /**
-     * Print the Twelve Days of Christmas and return the total number of gifts given.
-     */
     var total = 0
     for (day in 1..days) {
         val ordinal = ordinal(day)

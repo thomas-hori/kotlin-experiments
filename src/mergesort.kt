@@ -1,9 +1,9 @@
 import kotlin.math.min
 
+/**
+ * Carry out an in-place merge sort on the provided mutable list.
+ */
 fun<T:Comparable<T>> mergeSortInPlace(sequence:MutableList<T>) {
-    /**
-     * Carry out an in-place merge sort on the provided mutable list.
-     */
     var span = 1
     while (span < sequence.size) {
         for (firstOffset in 0 .. sequence.size step (span * 2)) {

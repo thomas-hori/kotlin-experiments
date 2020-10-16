@@ -1,7 +1,7 @@
+/**
+ * Print the Fibonacci numbers up to a given maximum.
+ */
 fun fibonacci(max:Int) {
-    /**
-     * Print the Fibonacci numbers up to a given maximum.
-     */
     var i:Int
     var j = 1
     var k = 1

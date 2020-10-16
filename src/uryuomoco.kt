@@ -27,12 +27,12 @@ val mapping = mapOf(
         'z' to 'x'
 )
 
+/**
+ * Encode to Uryuomoco, a fantasy-language-simulating cipher created by Dan Shive.
+ *
+ * Decoder to verify output against: https://harjit.moe/uryuomoco.html
+ */
 fun encodeUryuomoco(input:String):String {
-    /**
-     * Encode to Uryuomoco, a fantasy-language-simulating cipher created by Dan Shive.
-     *
-     * Decoder to verify output against: https://harjit.moe/uryuomoco.html
-     */
     // Stage 0: address assumptions which will be made throughout the remainder of the routine
     var temp = input.toLowerCase().replace("'", "-'")
     // Stage 1: special behaviour of Q before mapping

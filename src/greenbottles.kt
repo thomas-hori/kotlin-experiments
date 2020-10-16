@@ -1,7 +1,7 @@
+/**
+ * Prints "Ten Green Bottles" between a specified initial and final number of suspended bottles.
+ */
 infix fun Int.bottlesDownTo(end:Int) {
-    /**
-     * Prints "Ten Green Bottles" between a specified initial and final number of suspended bottles.
-     */
     for (i in this downTo end) {
         val j = i - 1
         println("$i green bottles hanging on the wall,")
