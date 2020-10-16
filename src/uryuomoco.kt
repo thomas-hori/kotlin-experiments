@@ -46,10 +46,14 @@ fun encodeUryuomoco(input:String):String {
     temp = temp.replace(Regex("cc(?!f)"), "ais")
     temp = temp.replace(Regex("([bdfghjklmnpqrstvwxyz])c(?!f)"), "$1is")
     // Stage 4: special mapping for th (ch not gf), sh (us not cf), ch (se not sf), wh (quo not quf)
+    // Special consideration is that usp (not u'sp) is attested for ack, meaning shk (matryoSHKa) needs
+    //   to be represented as us'p.
     temp = temp.replace("ch", "c'h")
     temp = temp.replace("gf", "ch")
     temp = temp.replace("us", "u's")
     temp = temp.replace("cf", "us")
+    temp = temp.replace("usp", "us'p")
+    temp = temp.replace("u'sp", "usp")
     temp = temp.replace("se", "s'e")
     temp = temp.replace("sf", "se")
     temp = temp.replace("quo", "qu'o")
@@ -63,7 +67,7 @@ fun encodeUryuomoco(input:String):String {
     temp = temp.replace(Regex("ja\\b(?!')"), "j'a")
     temp = temp.replace(Regex("j\\b(?!')"), "ja")
     temp = temp.replace(Regex("ot\\b(?!')"), "o't")
-    temp = temp.replace(Regex("ymt\\b(?!')"), "ot")
+    temp = temp.replace(Regex("yumt\\b(?!')"), "ot")
     temp = temp.replace(Regex("ra\\b(?!')"), "r'a")
     temp = temp.replace(Regex("rr\\b(?!')"), "ra")
     temp = temp.replace(Regex("([aiueo])yu\\b(?!')"), "$1y'u")
