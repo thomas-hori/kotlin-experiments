@@ -9,6 +9,8 @@ import java.io.RandomAccessFile
  * This does indeed mean that the database will always expand with use until it hits 2 binary gig,
  * at which point things will break. Were this intended for production, it would have been meet to
  * do something about that.
+ *
+ * Similarly, this is not thread safe in the remotest.
  */
 class DumbDatabase(fileName:String):MutableMap<String, String> {
     private var fileObj:RandomAccessFile = RandomAccessFile(fileName, "rwd")
@@ -104,10 +106,10 @@ class DumbDatabase(fileName:String):MutableMap<String, String> {
         }
     override val values: MutableCollection<String>
         get() {
-            val retVal = mutableSetOf("")
+            val retVal = mutableListOf("")
             retVal.clear()
             for (i in this.keys) {
-                retVal.add(this[i]!!)
+                retVal.add(retVal.size, this[i]!!)
             }
             return retVal
         }
