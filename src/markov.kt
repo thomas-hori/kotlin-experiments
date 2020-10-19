@@ -38,16 +38,16 @@ class Markov (training:String, size:Int = 3) {
                 lenBack += 1
             } while (sample in data && lenBack < outcome.length)
             sample = sample.substring(1..sample.lastIndex)
-            val subdata = data[sample] ?: return outcome + "||leaf||"
-            val total = subdata.values.sum()
+            val subData = data[sample] ?: return "$outcome||leaf||"
+            val total = subData.values.sum()
             val key = (Random.Default.nextDouble() * total).toInt()
             var runTotal = 0
-            for (j in subdata.keys) {
-                if (key in runTotal until (runTotal + subdata[j]!!)) {
+            for (j in subData.keys) {
+                if (key in runTotal until (runTotal + subData[j]!!)) {
                     outcome += j
                     break
                 }
-                runTotal += subdata[j]!!
+                runTotal += subData[j]!!
             }
         }
         return outcome
