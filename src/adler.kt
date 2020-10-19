@@ -1,3 +1,6 @@
+/**
+ * Calculate an adler32 checksum.
+ */
 @OptIn(ExperimentalUnsignedTypes::class)
 fun adler32 (data:ByteArray):UInt {
     var a = 1.toUShort()
