@@ -1,6 +1,10 @@
 import java.util.*
 import kotlin.collections.ArrayDeque
 
+/**
+ * Given a BMP dynamic window designator (i.e. the designator byte interpreted as unsigned, as
+ * an int), return the offset associated, or null for reserved designators.
+ */
 fun getBmpOffset(window:Int):Int? {
     return when (window) {
         in 0x01..0x67 -> window * 0x80
@@ -15,6 +19,11 @@ fun getBmpOffset(window:Int):Int? {
         else -> null
     }
 }
+
+/**
+ * Given a code point in the BMP, return the BMP dynamic window designator for the window containing
+ * that code point, or null if the code point is non-compressible or outside the BMP.
+ */
 fun getBmpWindow(offset:Int):Int? {
     return when (offset) {
         in 0xC0..0x013F -> 0xF9
@@ -29,20 +38,39 @@ fun getBmpWindow(offset:Int):Int? {
         else -> null
     }
 }
+
+/**
+ * Given a non-BMP dynamic window designator, return the offset associated.
+ */
 fun getAstralOffset(window:Int):Int {
     return (window * 0x80) + 0x10000
 }
+
+/**
+ * Given a non-BMP code point, return the non-BMP dynamic window designator for the window
+ * containing it.
+ */
 fun getAstralWindow(offset:Int):Int {
     return (offset - 0x10000) / 0x80
 }
+
+/**
+ * Given a byte object, obtain its unsigned value as an int.
+ */
 fun grokByte(input:Byte):Int {
     return (input.toInt() + 256).rem(256)
 }
 
+/**
+ * Add an item to the end of the list
+ */
 fun<T> MutableList<T>.append(thing:T) {
     this.add(this.size, thing)
 }
 
+/**
+ * Return a UTF-16 code corresponding to this numbered code point.
+ */
 fun Int.asCodePoint ():String = when (this) {
     in 0..0xFFFF -> {
         String(charArrayOf(this.toChar()))
@@ -73,7 +101,7 @@ fun decodeScsu(input:ByteArray):String {
         when (doubleByteMode) {
             false -> {
                 when (val value = grokByte(input[pointer])) {
-                    0x0, 0x9, 0xA, 0xD, in 0x20..0x7F -> { // Verbatim ASCII subset
+                    0x00, 0x09, 0x0A, 0x0D, in 0x20..0x7F -> { // Verbatim ASCII subset
                         output.append(value.asCodePoint())
                     }
                     in 0x80..0xFF -> { // Single-byte refs to active dynamic window
@@ -105,7 +133,7 @@ fun decodeScsu(input:ByteArray):String {
                             val value2 = grokByte(input[pointer])
                             pointer += 1
                             val value3 = grokByte(input[pointer])
-                            activeWindow = value3 shr 5
+                            activeWindow = value2 shr 5
                             val offset = getAstralOffset(((value2 and 0x1F) shl 8) or value3)
                             dynamicOffsets[activeWindow] = offset
                         }
@@ -191,7 +219,7 @@ fun decodeScsu(input:ByteArray):String {
                             val value2 = grokByte(input[pointer])
                             pointer += 1
                             val value3 = grokByte(input[pointer])
-                            activeWindow = value3 shr 5
+                            activeWindow = value2 shr 5
                             val offset = getAstralOffset(((value2 and 0x1F) shl 8) or value3)
                             dynamicOffsets[activeWindow] = offset
                             doubleByteMode = false
@@ -206,6 +234,11 @@ fun decodeScsu(input:ByteArray):String {
     return output.joinToString("")
 }
 
+/**
+ * Given a number and a list of offsets, return the first index into the offset list corresponding
+ * to an offset where the passed number is within a 128-integer range beginning at that offset, or
+ * null if it isn't for any of the offsets.
+ */
 fun inWindows (value:Int?, windows:List<Int>):Int? {
     var index = 0
     for (window in windows) {
@@ -217,6 +250,11 @@ fun inWindows (value:Int?, windows:List<Int>):Int? {
     return null
 }
 
+/**
+ * Return whether a given code point can be accessed via a single-byte-mode window in SCSU.
+ *
+ * This corresponds to legacy zones A and R of the BMP, plus all non-BMP planes.
+ */
 fun isCompressible (value:Int?):Boolean {
     // Is it either in zones A and R of the BMP, or Astral (SCSU's semi-arbitrary "compressible" region)
     // Excluding zone I is understandable, zone S arguably isn't part of Unicode, but zone O should really
@@ -224,6 +262,9 @@ fun isCompressible (value:Int?):Boolean {
     return value in 0x00..0x33FF || value in 0xE000..0x10FFFF
 }
 
+/**
+ * Convert some text from UTF-16 to a list of code points.
+ */
 fun unUtf16 (input:String):List<Int> {
     val output = MutableList(0){0}
     var pointer = 0
@@ -252,6 +293,9 @@ fun unUtf16 (input:String):List<Int> {
     return output
 }
 
+/**
+ * Convert some text from UTF-16 to SCSU.
+ */
 @OptIn(kotlin.ExperimentalStdlibApi::class)
 fun encodeScsu (inputString:String):ByteArray {
     // https://www.unicode.org/notes/tn14/UnicodeCompression.pdf#page=17
@@ -259,7 +303,7 @@ fun encodeScsu (inputString:String):ByteArray {
     val output = MutableList(0) { 0.toByte() }
     val staticOffsets = listOf(0x00, 0x80, 0x100, 0x300, 0x2000, 0x2080, 0x2100, 0x3000)
     val dynamicOffsets = mutableListOf(0x80, 0xC0, 0x0400, 0x0600, 0x0900, 0x3040, 0x30A0, 0xFF00)
-    val windowAges:ArrayDeque<Int> = ArrayDeque(listOf(8, 7, 6, 5, 4, 3, 2, 1))
+    val windowAges:ArrayDeque<Int> = ArrayDeque(listOf(7, 6, 5, 4, 3, 2, 1, 0))
     var doubleByteMode = false
     var pointer = 0
     var activeWindow = 0
@@ -371,6 +415,13 @@ fun encodeScsu (inputString:String):ByteArray {
                         in 0x00..0xDF, in 0xF3..0xFF -> {
                             output.append(highByte.toByte())
                             output.append((value and 0xFF).toByte())
+                        }
+                        in 0x100..0x10FF -> {
+                            val utf16 = value.asCodePoint()
+                            for (word in utf16) {
+                                output.append((word.toInt() shr 8).toByte())
+                                output.append((word.toInt() and 0xFF).toByte())
+                            }
                         }
                         else -> {
                             output.append(0xF0.toByte()) // UQU
