@@ -110,7 +110,7 @@ fun encodeUtf8 (input:String):ByteArray {
         inIndex += 1
         val codePoint = when (leadWord) {
             in 0xD800..0xDBFF -> {
-                if (inIndex == input.lastIndex) { // Truncated lead word
+                if (inIndex > input.lastIndex) { // Truncated lead word
                     0xFFFD
                 } else {
                     when (val trailWord = input[inIndex].toInt()) {
@@ -154,9 +154,9 @@ fun encodeUtf8 (input:String):ByteArray {
 }
 
 fun main () {
-    val input = (readLine() ?: "").split(", ", ",").map{it.toLong().toByte()}.toByteArray()
-    println(input.toList())
-    println(decodeUtf8(input))
-    println(encodeUtf8(decodeUtf8(input)).toList())
-    println(decodeUtf8(encodeUtf8(decodeUtf8(input))))
+    val input = readLine() ?: ""
+    println(input)
+    println(encodeUtf8(input))
+    println(encodeUtf8(input).toList())
+    println(decodeUtf8(encodeUtf8(input)))
 }
