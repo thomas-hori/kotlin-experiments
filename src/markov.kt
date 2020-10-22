@@ -55,6 +55,6 @@ class Markov (training:String, size:Int = 3) {
 }
 
 fun main () {
-    val mark = Markov(readLine() ?: "", 7)
+    val mark = Markov(readLine() ?: "", 4)
     println(mark.splurt())
 }

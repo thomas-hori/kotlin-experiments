@@ -350,6 +350,8 @@ fun encodeScsu (inputString:String):ByteArray {
                                 }
                             }
                             else -> {
+                                windowAges.remove(windowIndex)
+                                windowAges.addFirst(windowIndex)
                                 when (inWindows(value2, dynamicOffsets)) {
                                     activeWindow -> {
                                         output.append((0x01 + windowIndex).toByte()) // SQn
@@ -386,6 +388,8 @@ fun encodeScsu (inputString:String):ByteArray {
                         doubleByteMode = false
                         output.append(value.toByte())
                     } else if (window != null) {
+                        windowAges.remove(window)
+                        windowAges.addFirst(window)
                         activeWindow = window
                         output.append((0xE0 + activeWindow).toByte()) // UCn
                         doubleByteMode = false
