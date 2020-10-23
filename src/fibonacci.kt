@@ -1,7 +1,7 @@
 /**
  * Print the Fibonacci numbers up to a given maximum.
  */
-fun fibonacci(max:Int) {
+fun fibonacci(max:Int):Double {
     var i:Int
     var j = 1
     var k = 1
@@ -12,12 +12,15 @@ fun fibonacci(max:Int) {
             break
         }
     }
+    return j.toDouble() / k.toDouble()
 }
 
-fun Int.fibo() {
-    fibonacci(this)
+fun Int.fibo():Double {
+    return fibonacci(this)
 }
 
 fun main() {
-    10000.fibo()
+    val phi = 10000000.fibo()
+    val invphi = 1 / phi
+    println("$phi, $invphi")
 }
